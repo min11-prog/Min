@@ -1,0 +1,13 @@
+
+{
+  "name": "trend-scout",
+  "version": "1.0.0",
+  "private": true,
+  "homepage": "https://min11-prog.github.io/trend-scout",
+  "scripts": {
+    "deploy": "gh-pages -d ."
+  },
+  "devDependencies": {
+    "gh-pages": "^6.0.0"
+  }
+}

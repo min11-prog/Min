@@ -1,0 +1,9 @@
+{
+  "name": "Trend Scout - Market Intelligence Dashboard",
+  "description": "A sophisticated market intelligence platform for tracking competitor moves, AI technology trends, and HR industry shifts, featuring AI-powered insight generation.",
+  "requestFramePermissions": [],
+  "github_pages": {
+    "branch": "gh-pages",
+    "folder": "."
+  }
+}
