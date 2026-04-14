@@ -13,7 +13,7 @@ SNAPSHOT_DIR = Path("snapshots")
 SNAPSHOT_DIR.mkdir(exist_ok=True)
 
 TARGETS = [
-    {"name": "잡코리아 Main home", "url": "https://www.jobkorea.co.kr/", "selectors": ["h1", "h2"]},
+    {"name": "잡코리아 Main home", "url": "https://www.naver.com", "selectors": ["h1", "h2"]},
     {"name": "원티드 Main home", "url": "https://www.wanted.co.kr/", "selectors": ["h1", "h2"]},
     {"name": "Figma 프라이싱", "url": "https://www.figma.com/pricing/", "selectors": ["h1", "h2"]},
 ]
