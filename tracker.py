@@ -128,6 +128,7 @@ def log_to_notion(change: ChangeRecord):
             "심각도": {"select": {"name": change.severity}},
             "감지 시각": {"date": {"start": change.detected_at}},
             "스크린샷 변경률": {"number": change.screenshot_diff_pct},
+            "스크린샷": {"url": change.screenshot_url}
         },
         "children": []
     }
