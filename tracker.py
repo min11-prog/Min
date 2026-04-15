@@ -33,20 +33,41 @@ def upload_to_imgbb(image_path):
 
 # 3. 노션 기록
 def log_to_notion(name, url, pct, img_url):
+    # 1. 심각도 및 이모지 판정
+    severity = "major" if pct > 5 else "minor"
+    severity_emoji = "🔴" if severity == "major" else "🟡"
+    
+    # 2. 노션 데이터 구성
     payload = {
         "parent": {"database_id": NOTION_DB_ID},
         "properties": {
-            "이름": {"title": [{"text": {"content": f"🚨 {name} — UI 변경 ({pct}%)"}}]},
+            "이름": {"title": [{"text": {"content": f"{severity_emoji} {name} — UI 변경 ({pct}%)"}}]},
             "URL": {"url": url},
+            "변경 유형": {"select": {"name": "screenshot"}},
+            "심각도": {"select": {"name": severity}},
             "감지 시각": {"date": {"start": datetime.datetime.now().isoformat()}},
-            "스크린샷 변경률": {"number": pct},
+            "스크린샷 변경률": {"number": pct / 100}, # 노션 퍼센트 형식을 위해 100으로 나눔
             "스크린샷": {"url": img_url}
         },
-        "children": [{"object": "block", "type": "image", "image": {"type": "external", "external": {"url": img_url}}}] if img_url else []
+        "children": [
+            {
+                "object": "block",
+                "type": "image",
+                "image": {"type": "external", "external": {"url": img_url}}
+            }
+        ] if img_url else []
     }
-    requests.post("https://api.notion.com/v1/pages", 
-                  headers={"Authorization": f"Bearer {NOTION_TOKEN}", "Notion-Version": "2022-06-28", "Content-Type": "application/json"}, 
-                  json=payload)
+    
+    # 3. 전송
+    requests.post(
+        "https://api.notion.com/v1/pages", 
+        headers={
+            "Authorization": f"Bearer {NOTION_TOKEN}", 
+            "Notion-Version": "2022-06-28", 
+            "Content-Type": "application/json"
+        }, 
+        json=payload
+    )
     print(f"  ✅ Notion 기록 완료: {name}")
 
 # 4. 체크 로직
