@@ -33,20 +33,35 @@ def create_diff_image(old_path, new_path, diff_path):
     img_old = Image.open(old_path).convert("RGB")
     img_new = Image.open(new_path).convert("RGB")
     
-    # 크기 맞춤
-    w, h = min(img_old.size[0], img_new.size[0]), min(img_old.size[1], img_new.size[1])
-    img_old = img_old.crop((0, 0, w, h))
-    img_new = img_new.crop((0, 0, w, h))
-
-    # 차이 계산 및 빨간색 강조
-    diff = ImageChops.difference(img_old, img_new)
-    background = img_new.convert("RGBA")
-    red_mask = Image.new("RGBA", background.size, (255, 0, 0, 100)) # 빨간색 투명 마스크
-    mask = diff.convert("L").point(lambda x: 255 if x > 15 else 0)
+    # 1. 두 이미지 크기 맞추기 (가장 큰 폭과 높이 기준)
+    w = max(img_old.size[0], img_new.size[0])
+    h = max(img_old.size[1], img_new.size[1])
     
-    diff_img = Image.composite(red_mask, background, mask)
-    diff_img.convert("RGB").save(diff_path)
-    print(f"  📍 변경 위치 강조 이미지 생성 완료")
+    # 가로로 붙이기 위해 새 캔버스 생성 (폭 * 2)
+    combined = Image.new("RGB", (w * 2, h), (255, 255, 255))
+    combined.paste(img_old, (0, 0))
+    combined.paste(img_new, (w, 0))
+    
+    # 2. 차이점 계산 (박스를 그리기 위한 데이터)
+    diff = ImageChops.difference(img_old.crop((0,0,w,h)), img_new.crop((0,0,w,h)))
+    diff_mask = diff.convert("L").point(lambda x: 255 if x > 15 else 0)
+    
+    # 3. 변경된 영역에 빨간 테두리 그리기
+    from PIL import ImageDraw
+    draw = ImageDraw.Draw(combined)
+    
+    # 차이가 있는 곳을 찾아서 사각형 그리기 (간소화된 로직)
+    # 이미지 전체를 격자로 나누어 차이가 있는 구역에 박스를 칩니다.
+    grid_size = 20
+    for y in range(0, h, grid_size):
+        for x in range(0, w, grid_size):
+            box = (x, y, x + grid_size, y + grid_size)
+            if diff_mask.crop(box).getextrema()[1] > 0:
+                # 오른쪽 이미지(img_new) 위치에 박스 표시
+                draw.rectangle([x + w, y, x + w + grid_size, y + grid_size], outline="red", width=2)
+
+    combined.save(diff_path)
+    print(f"  📍 좌우 비교 이미지 생성 완료")
 
 # 4. 노션 기록 함수 (이미지 1장 버전)
 def log_to_notion(name, url, pct, diff_url):
