@@ -11,8 +11,10 @@ SNAPSHOT_DIR.mkdir(exist_ok=True)
 
 TARGETS = [
     {"name": "잡코리아 Main home", "url": "https://www.jobkorea.co.kr/"},
-    {"name": "원티드 Main home", "url": "https://www.wanted.co.kr/"},
-    {"name": "Figma 프라이싱", "url": "https://www.figma.com/pricing/"},
+    {"name": "잡코리아 Smartpick", "url": "hhttps://www.jobkorea.co.kr/service/company/cpc"},
+    {"name": "원티드 Pricing", "url": "https://www.wanted.co.kr/dashboard/welcome/pricing"},
+    {"name": "Klik Main home", "url": "https://www.klik.co.kr/"},
+    {"name": "알바몬 Main home", "url": "https://www.albamon.com/"},
 ]
 
 # 2. 이미지 업로드 함수
