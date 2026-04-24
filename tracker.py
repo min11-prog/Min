@@ -93,10 +93,17 @@ def check_target(target):
         page = context.new_page()
         
         try:
-            # 랜덤 대기 (사람인 척 하기 위해)
+            # 1. 랜덤 대기 (사람인 척)
             time.sleep(random.uniform(2, 5))
-            page.goto(url, wait_until="networkidle", timeout=60000)
-            page.wait_for_timeout(5000) # 추가 로딩 대기
+            
+            # 2. networkidle 대신 load 또는 domcontentloaded 사용
+            # 이렇게 하면 무거운 광고 스크립트가 다 안 끝나도 메인 화면이 뜨면 진행합니다.
+            page.goto(url, wait_until="load", timeout=60000)
+            
+            # 3. 페이지가 안정될 때까지 명시적으로 조금 더 대기
+            page.wait_for_timeout(7000) 
+            
+            # 4. 스냅샷 촬영
             page.screenshot(path=str(new_path), full_page=False)
         except Exception as e:
             print(f"  ❌ 접속 실패: {e}")
